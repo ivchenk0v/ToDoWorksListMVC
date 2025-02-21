@@ -12,5 +12,7 @@ namespace ToDoWorksListMVC.Models
         public required string Name { get; set; }
         [Display(Name = "Признак завершенности")]
         public bool IsDone { get; set; } = false;
+        [Display(Name = "Почта")]
+        public required string Email { get; set; }
     }
 }

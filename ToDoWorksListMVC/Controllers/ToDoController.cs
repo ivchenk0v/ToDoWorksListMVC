@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ToDoWorksListMVC.Models;
 using ToDoWorksListMVC.Services;
 
 namespace ToDoWorksListMVC.Controllers
 {
+    [Authorize]
     public class ToDoController : Controller
     {
         private readonly ILogger<ToDoController> _logger;
@@ -18,7 +19,8 @@ namespace ToDoWorksListMVC.Controllers
         // GET: ToDoController
         public ActionResult Index()
         {
-            return View(_toDoList.GetToDoList());
+            var email = User.FindFirst("email")?.Value;
+            return View(_toDoList.GetToDoList(email));
         }
 
         // GET: ToDoController/Details/5
@@ -40,8 +42,9 @@ namespace ToDoWorksListMVC.Controllers
         {
             try
             {
-                var newItem =  collection["Name"].ToString();
-                _toDoList.AddItemToDoList(newItem);
+                var newName =  collection["Name"].ToString();
+                var newEmail = collection["Email"].ToString();
+                _toDoList.AddItemToDoList(newName, newEmail);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -63,7 +66,7 @@ namespace ToDoWorksListMVC.Controllers
         {
             try
             {
-                var editItem = new ToDoItem { Id = Convert.ToInt32(collection["Id"]), Name = collection["Name"].ToString(), IsDone = collection["IsDone"].ToArray()[0] == "true" };
+                var editItem = new ToDoItem { Id = Convert.ToInt32(collection["Id"]), Name = collection["Name"].ToString(), IsDone = collection["IsDone"].ToArray()[0] == "true", Email = collection["Email"].ToString() };
                 _toDoList.UpdToDoItem(id, editItem);
                 return RedirectToAction(nameof(Index));
             }
