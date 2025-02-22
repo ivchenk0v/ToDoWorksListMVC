@@ -43,7 +43,8 @@ namespace ToDoWorksListMVC.Controllers
             try
             {
                 var newName =  collection["Name"].ToString();
-                var newEmail = collection["Email"].ToString();
+                //var newEmail = collection["Email"].ToString();
+                var newEmail = User.FindFirst("email")?.Value;
                 _toDoList.AddItemToDoList(newName, newEmail);
                 return RedirectToAction(nameof(Index));
             }
